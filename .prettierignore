@@ -26,3 +26,6 @@ bp_modules
 .genenv/
 .genenv.*
 .turbo
+# ghav harness files
+.github/workflows/ghav-*.yml
+.github/actions/setup/action.y*ml
