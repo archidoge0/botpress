@@ -27,11 +27,26 @@ runs:
         check-latest: true
 
     - name: Install dependencies
-      shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: pnpm i --frozen-lockfile
+
+    - name: Install dependencies
+      if: runner.os != 'Windows'
+      shell: bash
       run: pnpm i --frozen-lockfile
 
     - name: Build
-      shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
+      if: runner.os == 'Windows'
+      shell: pwsh
+      env:
+        TURBO_TEAM: ${{ inputs.turbo_team }}
+        TURBO_TOKEN: ${{ inputs.turbo_token }}
+      run: pnpm build ${{ inputs.extra_filters }}
+
+    - name: Build
+      if: runner.os != 'Windows'
+      shell: bash
       env:
         TURBO_TEAM: ${{ inputs.turbo_team }}
         TURBO_TOKEN: ${{ inputs.turbo_token }}

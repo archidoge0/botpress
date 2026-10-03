@@ -1,0 +1,31 @@
+name: "ghav human: Run Checks"
+"on":
+  push:
+    branches:
+      - ghav/dev/13592
+    paths:
+      - .ghav/human
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  run-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      NODE_OPTIONS: --max_old_space_size=8192
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          turbo_team: ${{ '' }}
+          turbo_token: ${{ '' }}
+      - run: pnpm run check:dep
+      - run: pnpm run check:sherif
+      - run: pnpm run check:oxlint
+      - run: pnpm run check:format
+      - run: pnpm run check:eslint
+      - run: pnpm run check:bplint
+      - run: pnpm run check:type
+      - run: pnpm run test
